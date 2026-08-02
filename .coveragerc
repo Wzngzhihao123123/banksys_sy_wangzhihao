@@ -1,0 +1,9 @@
+[run]
+source = src
+omit =
+    # Streamlit UI rendering — not unit-testable without a live Streamlit context
+    src/analysis.py
+    src/predictor.py
+
+[report]
+fail_under = 80
