@@ -25,6 +25,9 @@ jobs:
       - name: Format (ruff)
         run: ruff format .
 
+      - name: Lint fix (ruff)
+        run: ruff check --fix .
+
       - name: Lint (ruff)
         run: ruff check .
 

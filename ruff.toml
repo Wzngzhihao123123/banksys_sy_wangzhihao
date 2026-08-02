@@ -1,0 +1,22 @@
+# ruff configuration for banksys_sy_wangzhihao
+target-version = "py38"
+line-length = 100
+
+[lint]
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "I",   # isort (import sorting)
+    "UP",  # pyupgrade (use modern Python syntax)
+    "B",   # flake8-bugbear
+    "SIM", # flake8-simplify
+]
+ignore = [
+    "B904",  # raise without from inside except
+    "SIM105", # use contextlib.suppress
+]
+
+[lint.per-file-ignores]
+"app.py" = ["E722"]       # bare except in Streamlit error boundaries is acceptable
+"src/predictor.py" = ["E722"]  # bare except in display_result fallback
+"tests/*" = ["E722"]      # bare except in tests is acceptable
