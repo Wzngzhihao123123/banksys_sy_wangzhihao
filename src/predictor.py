@@ -150,10 +150,7 @@ def predict(
     # proba[0] = probability of class 0 ("no"), proba[1] = probability of class 1 ("yes")
     yes_prob = proba[1] if len(proba) > 1 else proba[0]
 
-    if pred_class == 1:
-        label = "会认购 ✅"
-    else:
-        label = "不会认购 ❌"
+    label = "会认购 ✅" if pred_class == 1 else "不会认购 ❌"
 
     return label, float(yes_prob)
 
