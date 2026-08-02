@@ -1,0 +1,59 @@
+name: CD
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to server via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -e
+            DEPLOY_DIR=/opt/banksys_sy_wangzhihao
+
+            # Clone or pull repo
+            if [ ! -d "$DEPLOY_DIR" ]; then
+              git clone https://github.com/Wzngzhihao123123/banksys_sy_wangzhihao.git "$DEPLOY_DIR"
+            fi
+            cd "$DEPLOY_DIR"
+            git pull origin main
+
+            # Build Docker image
+            docker build --build-arg PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple \
+              -t banksys_sy_wangzhihao:latest .
+
+            # Port auto-fallback: try 8888~8898
+            port_in_use() {
+              ss -ltnH 2>/dev/null | grep -q ":$1 " && return 0
+              docker ps --format "{{.Ports}}" 2>/dev/null | grep -q ":$1->" && return 0
+              return 1
+            }
+            PORT=""
+            for p in $(seq 8888 8898); do
+              if ! port_in_use "$p"; then PORT="$p"; break; fi
+            done
+            [ -z "$PORT" ] && { echo ">> 端口区间已满,部署中止"; exit 1; }
+            echo ">> 部署到主机端口 $PORT"
+
+            # Stop and remove old container (idempotent)
+            docker rm -f banksys_sy_wangzhihao 2>/dev/null || true
+
+            # Start new container
+            docker run -d \
+              --name banksys_sy_wangzhihao \
+              --restart unless-stopped \
+              -p ${PORT}:8888 \
+              banksys_sy_wangzhihao:latest
+
+            sleep 3
+            curl -fsS "http://localhost:${PORT}/"
+            echo ">> 部署成功: http://${{ secrets.SSH_HOST }}:${PORT}"
