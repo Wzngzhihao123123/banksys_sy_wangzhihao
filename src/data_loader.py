@@ -87,8 +87,7 @@ def load_data(path: str = None) -> pd.DataFrame:
 
     if not os.path.exists(path):
         raise FileNotFoundError(
-            f"数据文件未找到: {path}\n"
-            f"请将 train.csv 放置到 {DATA_DIR} 目录下。"
+            f"数据文件未找到: {path}\n请将 train.csv 放置到 {DATA_DIR} 目录下。"
         )
 
     df = pd.read_csv(path)

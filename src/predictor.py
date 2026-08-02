@@ -110,8 +110,7 @@ def load_model() -> Tuple[Any, List[str], Any]:
     """
     if not os.path.exists(MODEL_PATH):
         raise FileNotFoundError(
-            f"模型文件未找到: {MODEL_PATH}\n"
-            f"请先运行训练: python -m src.model_trainer"
+            f"模型文件未找到: {MODEL_PATH}\n请先运行训练: python -m src.model_trainer"
         )
 
     with open(MODEL_PATH, "rb") as f:
