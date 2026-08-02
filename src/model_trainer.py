@@ -82,7 +82,7 @@ def build_preprocessor(
             ("imputer", SimpleImputer(strategy="most_frequent")),
             (
                 "encoder",
-                OneHotEncoder(handle_unknown="ignore", sparse_output=False),
+                OneHotEncoder(handle_unknown="ignore", sparse=False),
             ),
         ]
     )

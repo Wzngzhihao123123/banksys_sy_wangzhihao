@@ -78,7 +78,7 @@ def sample_model():
     ])
     cat_pipe = Pipeline([
         ("imputer", SimpleImputer(strategy="most_frequent")),
-        ("encoder", OneHotEncoder(handle_unknown="ignore", sparse_output=False)),
+        ("encoder", OneHotEncoder(handle_unknown="ignore", sparse=False)),
     ])
 
     preprocessor = ColumnTransformer([
